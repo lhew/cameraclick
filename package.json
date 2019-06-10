@@ -1,0 +1,29 @@
+{
+  "name": "cameraclick",
+  "version": "0.0.0",
+  "description": "��#\u0000 \u0000c\u0000a\u0000m\u0000e\u0000r\u0000a\u0000c\u0000l\u0000i\u0000c\u0000k\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lhew/cameraclick.git"
+  },
+  "keywords": [
+    "camera",
+    "desktop",
+    "mobile",
+    "browser",
+    "snapshot"
+  ],
+  "author": "Leonardo Almeida",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lhew/cameraclick/issues"
+  },
+  "homepage": "https://github.com/lhew/cameraclick#readme",
+  "dependencies": {
+    "http-server": "^0.11.1"
+  }
+}
