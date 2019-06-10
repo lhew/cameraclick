@@ -1,65 +1,74 @@
-function cameraClick(element){
+function cameraClick(element, camOptions) {
+
+
+    const options = {
+        width: 320,
+        height: 480,
+        ...camOptions
+    }
+
+    const constraint = {
+        video: { width: { min: options.width }, height: { min: options.height } }
+    };
+
+    let mediaTracks = {};
+
     const videoElement = element;
+    const captureBtn = document.createElement('button');
+    const toggleVideo = document.createElement('button');
     const videoCanvas = document.createElement('video');
+
+    let isPlaying = false;
+
     videoCanvas.autoplay = true;
-    const videoCaptureBtn = document.createElement('button');
-    videoCaptureBtn.innerHTML = "CAPTURE"
+    videoCanvas.width = options.width;
+    videoCanvas.height = options.height;
+    videoCanvas.style.objectFit = 'cover';
+    videoCanvas.style.backgroundColor = 'red';
 
-    videoElement.appendChild(videoCanvas);
-    videoElement.appendChild(videoCaptureBtn);
-    // const audioSelect = document.querySelector('select#audioSource');
-    // const videoSelect = document.querySelector('select#videoSource');
-    navigator.mediaDevices.enumerateDevices()
-    .then(getStream)
-    .then(gotStream)
-    .catch(handleError);
-    /*    
-    
-      
-    audioSelect.onchange = getStream;
-    videoSelect.onchange = getStream;
+    captureBtn.innerHTML = "SCREENSHOT";
+    captureBtn.disabled = true;
+    captureBtn.onclick = function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = videoCanvas.width;
+        canvas.height = videoCanvas.height;
+        canvas.getContext('2d').drawImage(videoCanvas, 0, 0);
 
-    function gotDevices(deviceInfos) {
-      for (let i = 0; i !== deviceInfos.length; ++i) {
-        const deviceInfo = deviceInfos[i];
-        const option = document.createElement('option');
-        option.value = deviceInfo.deviceId;
-        if (deviceInfo.kind === 'audioinput') {
-          option.text = deviceInfo.label ||
-            'microphone ' + (audioSelect.length + 1);
-          audioSelect.appendChild(option);
-        } else if (deviceInfo.kind === 'videoinput') {
-          option.text = deviceInfo.label || 'camera ' +
-            (videoSelect.length + 1);
-          videoSelect.appendChild(option);
+        if(typeof camOptions.onCapture === 'function')
+            return camOptions.onCapture(canvas.toDataURL('image/png'));
+    };
+
+    toggleVideo.innerHTML = "START";
+    toggleVideo.onclick = function () {
+        if (!isPlaying) {
+            isPlaying = true;
+            captureBtn.disabled = false;
+            videoElement.appendChild(videoCanvas);
+            toggleVideo.innerHTML = "STOP";
+
+            navigator.getUserMedia(constraint, function (localMediaStream) {
+                videoCanvas.srcObject = localMediaStream;
+                mediaTracks = localMediaStream;
+            }, function (error) {
+                console.log('oops', error);
+            });
+
         } else {
-          console.log('Found another kind of device: ', deviceInfo);
+            captureBtn.disabled = true;
+            isPlaying = false;
+            videoElement.removeChild(videoCanvas);
+            toggleVideo.innerHTML = "START";
+            [...mediaTracks.getTracks()].map(track => track.stop());
         }
-      }
-    }
-*/    
-    function getStream() {
-      if (window.stream) {
-        window.stream.getTracks().forEach(function(track) {
-          track.stop();
-        });
-      }
-    
-      const constraints = {
-        video: true
-      };
-    
-      navigator.mediaDevices.getUserMedia(constraints).
-        then(gotStream).catch(handleError);
-    }
-    
-    function gotStream(stream) {
-      window.stream = stream; // make stream available to console
-      videoCanvas.srcObject = stream;
-    }
-    
+    };
+
+
+    videoElement.appendChild(captureBtn);
+    videoElement.appendChild(toggleVideo);
+
     function handleError(error) {
-      console.error('Error: ', error);
+        console.error('Error: ', error);
     }
+
 }
 
