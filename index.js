@@ -1,50 +1,56 @@
-function cameraClick(element, camOptions) {
-
+export default function CameraClick(element, camOptions) {
+    let isPlaying = false;
 
     const options = {
         width: 320,
         height: 480,
-        ...camOptions
+        screenshotCaption: "Screenshot",
+        captureCaption: {start: "Start", stop: "Stop"},
+        ...camOptions,
     }
 
     const constraint = {
-        video: { width: { min: options.width }, height: { min: options.height } }
+        video: { width: { exact: options.width }, height: { exact: options.height } }
     };
-
+ 
     let mediaTracks = {};
 
     const videoElement = element;
+
     const captureBtn = document.createElement('button');
     const toggleVideo = document.createElement('button');
     const videoCanvas = document.createElement('video');
-
-    let isPlaying = false;
+    const videoWrapper = document.createElement('div');
 
     videoCanvas.autoplay = true;
     videoCanvas.width = options.width;
     videoCanvas.height = options.height;
     videoCanvas.style.objectFit = 'cover';
-    videoCanvas.style.backgroundColor = 'red';
 
-    captureBtn.innerHTML = "SCREENSHOT";
+    captureBtn.innerHTML = options.screenshotCaption;
     captureBtn.disabled = true;
-    captureBtn.onclick = function () {
+    captureBtn.onclick = function (captureArguments) {
+        const captureOptions = {
+            type: 'image/png',
+            quality: 1,
+            ...captureArguments
+        }
         const canvas = document.createElement('canvas');
         canvas.width = videoCanvas.width;
         canvas.height = videoCanvas.height;
         canvas.getContext('2d').drawImage(videoCanvas, 0, 0);
 
         if(typeof camOptions.onCapture === 'function')
-            return camOptions.onCapture(canvas.toDataURL('image/png'));
+            return camOptions.onCapture(canvas.toDataURL(captureOptions));
     };
 
-    toggleVideo.innerHTML = "START";
+    toggleVideo.innerHTML = options.captureCaption.start;
     toggleVideo.onclick = function () {
         if (!isPlaying) {
             isPlaying = true;
             captureBtn.disabled = false;
-            videoElement.appendChild(videoCanvas);
-            toggleVideo.innerHTML = "STOP";
+            videoWrapper.appendChild(videoCanvas);
+            toggleVideo.innerHTML = options.captureCaption.stop;
 
             navigator.getUserMedia(constraint, function (localMediaStream) {
                 videoCanvas.srcObject = localMediaStream;
@@ -56,19 +62,18 @@ function cameraClick(element, camOptions) {
         } else {
             captureBtn.disabled = true;
             isPlaying = false;
-            videoElement.removeChild(videoCanvas);
+            videoWrapper.removeChild(videoCanvas);
             toggleVideo.innerHTML = "START";
             [...mediaTracks.getTracks()].map(track => track.stop());
         }
     };
 
-
+    
     videoElement.appendChild(captureBtn);
     videoElement.appendChild(toggleVideo);
-
+    videoElement.appendChild(videoWrapper);
+    
     function handleError(error) {
         console.error('Error: ', error);
     }
-
 }
-

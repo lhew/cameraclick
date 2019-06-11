@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="index.js"></script>
 </head>
 <body>
-    <div id="camera" style="background: #babaca; width: 300px; height: 300px; position: absolute; left: 50%; top: 50%; transform: translate3d(-50%, -50%, 0)"></div>
-    <script>
+    <div id="camera" style="background: #babaca; overflow: hidden; position: absolute; left: 50%; top: 50%; transform: translate3d(-50%, -50%, 0)"></div>
+    <script type="module">
+        import CameraClick from "./index.js";
+
         window.onload = function() {
             const canvas = document.querySelector("#camera");
-            console.log(cameraClick);
-            cameraClick(canvas, {
+            CameraClick(canvas, {
                 onCapture: function(data) {
                     console.log('here is the data ', data);
                 }
