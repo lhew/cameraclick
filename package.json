@@ -1,6 +1,6 @@
 {
   "name": "cameraclick",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Simple script to capture images from your browser",
   "main": "index.js",
   "scripts": {
