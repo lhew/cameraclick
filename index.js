@@ -1,3 +1,18 @@
+
+const constraints = {
+    vga: {
+        video: {width: {exact: 640}, height: {exact: 480}}
+      },
+    
+    hd: {
+        video: { width: { exact: 1280 }, height: { exact: 720 } }
+    },
+    
+    fullhd: {
+        video: { width: { exact: 1920 }, height: { exact: 1080 } }
+    } 
+};
+
 export default function CameraClick(element, camOptions) {
     let isPlaying = false;
 
@@ -5,14 +20,11 @@ export default function CameraClick(element, camOptions) {
         width: 320,
         height: 480,
         screenshotCaption: "Screenshot",
-        captureCaption: {start: "Start", stop: "Stop"},
+        resolution: 'vga',
+        captureCaption: { start: "Start", stop: "Stop" },
         ...camOptions,
     }
 
-    const constraint = {
-        video: { width: { exact: options.width }, height: { exact: options.height } }
-    };
- 
     let mediaTracks = {};
 
     const videoElement = element;
@@ -40,7 +52,7 @@ export default function CameraClick(element, camOptions) {
         canvas.height = videoCanvas.height;
         canvas.getContext('2d').drawImage(videoCanvas, 0, 0);
 
-        if(typeof camOptions.onCapture === 'function')
+        if (typeof camOptions.onCapture === 'function')
             return camOptions.onCapture(canvas.toDataURL(captureOptions));
     };
 
@@ -52,7 +64,7 @@ export default function CameraClick(element, camOptions) {
             videoWrapper.appendChild(videoCanvas);
             toggleVideo.innerHTML = options.captureCaption.stop;
 
-            navigator.getUserMedia(constraint, function (localMediaStream) {
+            navigator.getUserMedia(constraints[options.resolution], function (localMediaStream) {
                 videoCanvas.srcObject = localMediaStream;
                 mediaTracks = localMediaStream;
             }, function (error) {
@@ -68,11 +80,11 @@ export default function CameraClick(element, camOptions) {
         }
     };
 
-    
+
     videoElement.appendChild(captureBtn);
     videoElement.appendChild(toggleVideo);
     videoElement.appendChild(videoWrapper);
-    
+
     function handleError(error) {
         console.error('Error: ', error);
     }

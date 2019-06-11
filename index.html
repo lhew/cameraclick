@@ -7,13 +7,14 @@
     <title>Document</title>
 </head>
 <body>
-    <div id="camera" style="background: #babaca; overflow: hidden; position: absolute; left: 50%; top: 50%; transform: translate3d(-50%, -50%, 0)"></div>
+    <div id="camera" style="background: #babaca; overflow: hidden; margin: 20% auto"></div>
     <script type="module">
         import CameraClick from "./index.js";
 
         window.onload = function() {
             const canvas = document.querySelector("#camera");
             CameraClick(canvas, {
+                resolution: 'hd',
                 onCapture: function(data) {
                     console.log('here is the data ', data);
                 }
