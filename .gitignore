@@ -1,1 +1,16 @@
-node_modules
+.DS_Store
+Thumbs.db
+db.json
+*.log
+.jest-test-results.json
+.env*
+node_modules/
+public/
+.deploy*/
+dist/
+build/
+files.js
+.storybook/*.html
+
+coverage/
+stats.html

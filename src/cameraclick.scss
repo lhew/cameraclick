@@ -1,3 +1,6 @@
+$color-gray: #919191;
+$color-white: #ffffff;
+
 %fill-screen {
     position: absolute;
     left: 0;
@@ -6,7 +9,7 @@
     height: 100%;
 }
 
-.take-picture {
+.cameraclick {
     display: flex;
     justify-content: space-between;
     position: fixed;
