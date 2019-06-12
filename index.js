@@ -1,17 +1,22 @@
-
 const constraints = {
-    vga: {
-        video: {width: {exact: 640}, height: {exact: 480}}
-      },
-    
-    hd: {
-        video: { width: { exact: 1280 }, height: { exact: 720 } }
+    auto: {
+        video: {
+            width: {
+                min: 1280,
+            },
+            height: {
+                min: 720,
+            },
+        },
     },
-    
-    fullhd: {
-        video: { width: { exact: 1920 }, height: { exact: 1080 } }
-    } 
 };
+
+function calculateCanvasPosition(canvas, width, height) {
+    return {
+        x: (canvas.width - width) / 2,
+        y: (canvas.height - height) / 2,
+    };
+}
 
 export default function CameraClick(element, camOptions) {
     let isPlaying = false;
@@ -19,13 +24,14 @@ export default function CameraClick(element, camOptions) {
     const options = {
         width: 320,
         height: 480,
-        screenshotCaption: "Screenshot",
-        resolution: 'vga',
-        captureCaption: { start: "Start", stop: "Stop" },
+        screenshotCaption: 'Screenshot',
+        resolution: 'auto',
+        captureCaption: { start: 'Start', stop: 'Stop' },
         ...camOptions,
-    }
+    };
 
     let mediaTracks = {};
+    
 
     const videoElement = element;
 
@@ -34,58 +40,104 @@ export default function CameraClick(element, camOptions) {
     const videoCanvas = document.createElement('video');
     const videoWrapper = document.createElement('div');
 
+    videoWrapper.className = `${element.id || 'element'}__video-wrapper`;
+    toggleVideo.className = `${element.id || 'element'}__camera-toggler`;
     videoCanvas.autoplay = true;
     videoCanvas.width = options.width;
     videoCanvas.height = options.height;
     videoCanvas.style.objectFit = 'cover';
 
-    captureBtn.innerHTML = options.screenshotCaption;
-    captureBtn.disabled = true;
-    captureBtn.onclick = function (captureArguments) {
-        const captureOptions = {
-            type: 'image/png',
-            quality: 1,
-            ...captureArguments
+    const open = async (onOpen, onError) => {
+        if (typeof onOpen === 'function') {
+            onOpen((await checkPermissions()) == 'granted');
         }
-        const canvas = document.createElement('canvas');
-        canvas.width = videoCanvas.width;
-        canvas.height = videoCanvas.height;
-        canvas.getContext('2d').drawImage(videoCanvas, 0, 0);
 
-        if (typeof camOptions.onCapture === 'function')
-            return camOptions.onCapture(canvas.toDataURL(captureOptions));
+        isPlaying = true;
+        captureBtn.disabled = false;
+        toggleVideo.innerHTML = options.captureCaption.stop;
+
+        navigator.getUserMedia(
+            { video: true },
+            function(localMediaStream) {
+                videoWrapper.innerHTML = '';
+                videoWrapper.appendChild(videoCanvas);
+                videoCanvas.srcObject = localMediaStream;
+                mediaTracks = localMediaStream;
+                window.mediaTracks = mediaTracks;
+            },
+            function(error) {
+                if (typeof onError === 'function') onError(error);
+            }
+        );
+    };
+
+    const capture = (captureArguments = {}) => {
+        const captureOptions = {
+            type: 'image/jpeg',
+            quality: 0.85,
+            stopStreamAfterCapture: true,
+            ...captureArguments,
+        };
+        const canvas = document.createElement('canvas');
+        canvas.width = videoCanvas.clientWidth;
+        canvas.height = videoCanvas.clientHeight;
+        const { width, height } = [...mediaTracks.getVideoTracks()].filter(video => video.enabled)[0].getSettings();
+        const newWidth = Math.ceil((canvas.width / width + 1) * width);
+        const newHeight = Math.ceil((canvas.height / height) * height);
+        const { x, y } = calculateCanvasPosition(canvas, newWidth, newHeight);
+
+        canvas.getContext('2d').drawImage(videoCanvas, x, y, newWidth, newHeight);
+
+        if (typeof camOptions.onCapture === 'function') {
+            const { type, quality } = captureOptions;
+            camOptions.onCapture({ image: canvas.toDataURL(type, quality), cropInfo: { x, y, width: newWidth, height: newHeight } });
+        }
     };
 
     toggleVideo.innerHTML = options.captureCaption.start;
-    toggleVideo.onclick = function () {
+    toggleVideo.onclick = function() {
         if (!isPlaying) {
-            isPlaying = true;
-            captureBtn.disabled = false;
-            videoWrapper.appendChild(videoCanvas);
-            toggleVideo.innerHTML = options.captureCaption.stop;
-
-            navigator.getUserMedia(constraints[options.resolution], function (localMediaStream) {
-                videoCanvas.srcObject = localMediaStream;
-                mediaTracks = localMediaStream;
-            }, function (error) {
-                console.log('oops', error);
-            });
-
+            open();
         } else {
-            captureBtn.disabled = true;
-            isPlaying = false;
-            videoWrapper.removeChild(videoCanvas);
-            toggleVideo.innerHTML = "START";
-            [...mediaTracks.getTracks()].map(track => track.stop());
+            close(true);
         }
     };
 
+    const close = (activateCallback) => {
+        captureBtn.disabled = true;
+        isPlaying = false;
+        toggleVideo.innerHTML = options.captureCaption.start;
+        videoCanvas.srcObject = null;
 
+        [...mediaTracks.getTracks()].map(track => track.stop());
+
+        if (typeof camOptions.onClose === 'function' && activateCallback) {
+            camOptions.onClose();
+        }
+    };
+
+    const checkPermissions = async function() {
+        const permissions = await navigator.permissions.query({ name: 'camera' });
+        const result = await permissions;
+
+        return result.state;
+    };
+
+    const isOpen = () => isPlaying;
+
+    captureBtn.innerHTML = options.screenshotCaption;
+    captureBtn.className = `${element.id || 'element'}__capture`;
+    captureBtn.disabled = true;
+    captureBtn.onclick = capture;
+
+    videoElement.appendChild(videoWrapper);
     videoElement.appendChild(captureBtn);
     videoElement.appendChild(toggleVideo);
-    videoElement.appendChild(videoWrapper);
 
-    function handleError(error) {
-        console.error('Error: ', error);
-    }
+    return {
+        isOpen,
+        capture,
+        open,
+        close,
+    };
 }

@@ -13,7 +13,7 @@
 
         window.onload = function() {
             const canvas = document.querySelector("#camera");
-            CameraClick(canvas, {
+            const camera = new CameraClick(canvas, {
                 resolution: 'hd',
                 onCapture: function(data) {
                     console.log('here is the data ', data);
