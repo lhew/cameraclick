@@ -1,26 +1,29 @@
 import CameraClick from './cameraclick'
 import './cameraclick.scss'
 window.onload = () => {
-  const createElement = (data, width, height) => {
-    const img = document.createElement('img')
-    img.id = 'ai'
-    img.style.width = `${element.clientWidth}px`
-    img.style.height = `${element.clientHeight}px`
-    img.style.float = 'right'
-    img.src = data.image
-    img.style.objectFit = 'cover'
-    const canvas = document.createElement('canvas')
-    canvas.width = element.clientWidth
-    canvas.height = element.clientHeight
-    canvas.getContext('2d').drawImage(img, 0, 0)
-
-    console.log('here is the data ', img)
+  const createElement = (width, height) => {
+    
   }
 
   const element = document.querySelector('#camera')
   const camera = new CameraClick(element, {
     onCapture: function (data) {
-      createElement(data)
+      const img = document.createElement('img')
+      img.width = element.clientWidth
+      img.height = element.clientHeight
+      img.src = data.image
+      img.style.objectFit = 'cover'
+      img.style.float = 'right'
+      document.body.appendChild(img)
+
+      // img.onload = function () {
+      //   const canvas = document.createElement('canvas')
+      //   canvas.width = element.clientWidth
+      //   canvas.height = element.clientHeight
+      //   canvas.getContext('2d').drawImage(img, 0, 0)
+
+      //   console.log(canvas.toDataURL('image/jpeg', 0.5))
+      // }
     }
   })
 
