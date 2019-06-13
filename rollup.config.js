@@ -12,9 +12,9 @@ process.env.NODE_ENV = 'production'
 process.env.BABEL_ENV = 'production'
 
 const config = {
-  input: 'src/cameraclick.js',
+  input: ['src/index.js', 'src/cameraclick.js', 'src/utils.js'],
   output: {
-    file: 'dist/cameraclick.js',
+    dir: 'dist',
     format: 'cjs',
     sourcemap: true
   },

@@ -1,33 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
-    <style>
-        body{
-            background: #000;
-            color: #fff;
-        }
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
 
-        #camera {
-            width: 375px;
-            height: 812px;
-            padding: 1em;
-            position: fixed;
-            left: 0;
-            top: -100%;
-        }
-
-        #camera.open {
-            top: 40px;
-        }
-    </style>
-    <button id="start">Show</button>
-<body>
+    *:after,
+    *:before {
+        box-sizing: border-box
+    }
     
+    body {
+        background: #000;
+        color: #fff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+    }
+
+
+
+    #camera {
+        width: 480px;
+        height: 640px;
+        position: fixed;
+        left: 120px;
+        top: -100%;
+    }
+
+    #camera.open {
+        top: 40px;
+    }
+
+    #args {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        width: 350px;
+        color: #fff
+    }
+
+    label {
+        width: 100%;
+        margin-bottom: 1em;
+        display: block;
+    }
+
+    input {
+        font-size: 1.6em;
+    }
+
+    label span {
+        display: block;
+    }
+    canvas {
+        border: 1px solid white
+    }
+</style>
+<button id="start">Show</button>
+<body>
+    <div id="camera"></div>
 </body>
 </html>
-<div id="camera"></div>
