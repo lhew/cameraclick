@@ -1,6 +1,6 @@
 import CameraClick from './cameraclick'
 import './cameraclick.scss'
-import {adjustSizing} from './utils'
+import { adjustSizing } from './utils'
 window.canvas = {
   remove: () => ({})
 }
@@ -9,28 +9,26 @@ var camera
 
 window.onload = () => {
   const element = document.querySelector('#camera')
-  console.log(element.clientWidth);
-  const createElement = ({image, cropInfo}) => {
-    window.img = document.createElement('img')
-    window.img.style.float = 'right'
-    window.img.src = image
-    window.canvas = document.createElement('canvas')
-    window.canvas.width = element.clientWidth
-    window.canvas.height = element.clientHeight
-    const {width, height} = cropInfo;
+  console.log(element.clientWidth)
+  const createElement = ({ image, cropInfo }) => {
+    var img = document.createElement('img')
+    img.style.float = 'right'
+    img.src = image
+    var canvas = document.createElement('canvas')
+    canvas.width = element.clientWidth
+    canvas.height = element.clientHeight
+    const { width, height } = cropInfo
 
-    const {newWidth, newHeight, x, y} = adjustSizing(width, height, element.clientWidth, element.clientHeight);
+    const { newWidth, newHeight, x, y } = adjustSizing(width, height, element.clientWidth, element.clientHeight)
     console.log(width, height, element.clientWidth, element.clientHeight, adjustSizing(width, height, element.clientWidth, element.clientHeight))
 
-    window.img.onload = function () {
-     window.canvas.getContext('2d').drawImage(window.img, x, y, newWidth, newHeight);
+    img.onload = function () {
+      canvas.getContext('2d').drawImage(img, x, y, newWidth, newHeight)
     }
 
     document.body.appendChild(canvas)
     element.classList.toggle('open')
     camera.close()
-
-
   }
 
   camera = new CameraClick(element, {

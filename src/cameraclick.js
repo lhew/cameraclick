@@ -61,7 +61,7 @@ export default function CameraClick (element, camOptions) {
       const { type, quality } = captureOptions
       camOptions.onCapture({
         image: canvas.toDataURL(type, quality),
-        cropInfo: {width, height}
+        cropInfo: { width, height }
       })
     }
   }
