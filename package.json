@@ -2,7 +2,7 @@
   "name": "cameraclick",
   "version": "0.1.0",
   "description": "Simple script to capture images from your browser",
-  "main": "dist/index.js",
+  "main": "dist/cameraclick.js",
   "files": [
     "dist"
   ],
