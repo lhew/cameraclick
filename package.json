@@ -27,7 +27,7 @@
     "start": "webpack-dev-server --mode development --hot --inline --progress --compress",
     "test": "./node_modules/.bin/jest -u",
     "eslint": "./node_modules/.bin/eslint **src/**/*.js --fix",
-    "preversion": "npm run eslint && npm test",
+    "preversion": "npm run eslint",
     "version": "npm run build",
     "postversion": "git push && git push --tags"
   },
