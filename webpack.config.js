@@ -11,7 +11,7 @@ module.exports = (env, argv) => {
 
   const config = {
     devtool: "source-map",
-    entry: "./src/index.js",
+    entry: "./src/main.js",
     output: {
       publicPath: "/",
       path: path.resolve(__dirname, "dist"),
