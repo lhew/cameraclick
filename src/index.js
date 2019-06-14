@@ -1,2 +1,2 @@
 export { default as CameraClick } from './cameraclick'
-export { adjustSizing } from './utils'
+export { default as adjustSizing } from './utils'

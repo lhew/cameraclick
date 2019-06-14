@@ -1,4 +1,4 @@
-
+console.log('xablau')
 export default function CameraClick (element, camOptions) {
   let isPlaying = false
 

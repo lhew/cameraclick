@@ -1,4 +1,4 @@
-export const adjustSizing = (w, h, parentWidth, parentHeight) => {
+export default function adjustSizing(w, h, parentWidth, parentHeight){
   const portraitAdjust = (even) => {
     const newHeight = parentHeight
     const newWidth = (w * parentHeight) / h

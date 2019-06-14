@@ -1,6 +1,6 @@
 import CameraClick from './cameraclick'
 import './cameraclick.scss'
-import { adjustSizing } from './utils'
+import adjustSizing from './utils'
 window.canvas = {
   remove: () => ({})
 }
