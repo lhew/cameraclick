@@ -8,7 +8,7 @@ window.canvas = {
 
 window.onload = () => {
   const element = document.querySelector('#camera')
-  let camera;
+  let camera
   camera = new CameraClick(element, {
     onCapture: async (imageData) => {
       const parentDimensions = {
