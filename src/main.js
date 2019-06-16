@@ -5,23 +5,19 @@ window.canvas = {
   remove: () => ({})
 }
 
-var camera
 
 window.onload = () => {
   const element = document.querySelector('#camera')
-  const createElement = async (imageData) => {
-    const parentDimensions = {
-      width: 320,
-      height: 480
-    }
-    const resource = await createCanvas(imageData, parentDimensions, 'jpeg', 0.5)
-    console.log(resource.toBase64())
-    camera.close()
-  }
-
+  let camera;
   camera = new CameraClick(element, {
-    onCapture: function (data) {
-      createElement(data)
+    onCapture: async (imageData) => {
+      const parentDimensions = {
+        width: 320,
+        height: 480
+      }
+      const resource = await createCanvas(imageData, parentDimensions, 'jpeg', 0.5)
+      console.log(resource.toBase64())
+      camera.close()
     }
   })
 
