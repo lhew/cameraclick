@@ -7,8 +7,6 @@ const webpack = require("webpack");
 module.exports = (env, argv) => {
   process.env.BABEL_ENV = argv.mode;
 
-  console.log('mode ', argv.mode);
-
   const config = {
     devtool: "source-map",
     entry: "./src/main.js",

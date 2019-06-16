@@ -5,7 +5,6 @@ window.canvas = {
   remove: () => ({})
 }
 
-
 window.onload = () => {
   const element = document.querySelector('#camera')
   let camera

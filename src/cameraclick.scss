@@ -33,10 +33,6 @@ $color-white: #ffffff;
         }
     }
 
-    &__preview {
-        @extend %fill-screen;
-    }
-
     &__capture {
         position: absolute;
         z-index: 2;

@@ -1,11 +1,11 @@
 {
   "name": "cameraclick",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Simple script to capture images from your browser",
-  "main": "dist/cameraclick.js",
   "files": [
-    "dist"
+    "dist/"
   ],
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lhew/cameraclick.git"
