@@ -1,6 +1,6 @@
 {
   "name": "cameraclick",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "Simple script to capture images from your browser",
   "files": [
     "dist/"

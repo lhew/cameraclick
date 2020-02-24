@@ -48,7 +48,7 @@ export default function CameraClick(element, camOptions) {
   const capture = (captureArguments = {}) => {
     const captureOptions = {
       type: 'image/jpeg',
-      quality: 0.85,
+      quality: 1,
       stopStreamAfterCapture: true,
       ...captureArguments
     };
@@ -63,7 +63,7 @@ export default function CameraClick(element, camOptions) {
     if (typeof camOptions.onCapture === 'function') {
       const { type, quality } = captureOptions;
       camOptions.onCapture({
-        image: canvas.toDataURL(type, quality),
+        data: canvas.toDataURL(type, quality),
         cropInfo: { width, height }
       });
     }

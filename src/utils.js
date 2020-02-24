@@ -1,4 +1,33 @@
-export default function adjustSizing(w, h, parentWidth, parentHeight){
+export const createCanvas = async (imageData, parentDimensions, extension, quality) => {
+  const { data, cropInfo } = imageData
+  const img = document.createElement('img')
+  const canvas = document.createElement('canvas')
+  const { width, height } = cropInfo
+  const { newWidth, newHeight, x, y } = adjustSizing(width, height, parentDimensions)
+
+  img.src = data
+  canvas.getContext('2d').drawImage(img, x, y, newWidth, newHeight)
+  canvas.width = parentDimensions.width
+  canvas.height = parentDimensions.height
+
+  return new Promise(function (resolve, reject) {
+    img.onload = function () {
+      canvas.getContext('2d').drawImage(img, x, y, newWidth, newHeight)
+      resolve({
+        toBase64: () => canvas.toDataURL(`image/${extension || 'jpeg'}`, quality || 0.8),
+        toImage: () => {
+          const output = document.createElement('img')
+          output.src = canvas.toDataURL(`image/${extension || 'jpeg'}`, quality || 0.8)
+          return output
+        }
+      })
+    }
+  })
+}
+
+export const adjustSizing = (w, h, parentDimensions) => {
+  const { width: parentWidth, height: parentHeight } = parentDimensions
+
   const portraitAdjust = (even) => {
     const newHeight = parentHeight
     const newWidth = (w * parentHeight) / h
