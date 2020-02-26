@@ -72,9 +72,35 @@ export default function CameraClick (element, camOptions) {
   const close = activateCallback => {
     captureBtn.disabled = true
     isPlaying = false
-    videoCanvas.srcObject = null;
+    videoCanvas.srcObject = null
 
-    [...mediaTracks.getTracks()].map(track => track.stop())
+    /* global webkitMediaStream:true */
+    var MediaStream = window.MediaStream
+
+    if (
+      typeof MediaStream === 'undefined' &&
+      typeof webkitMediaStream !== 'undefined'
+    ) {
+      MediaStream = webkitMediaStream
+    }
+
+    if (
+      typeof MediaStream !== 'undefined' &&
+      !('stop' in MediaStream.prototype)
+    ) {
+      MediaStream.prototype.stop = function () {
+        Array.from(this.getTracks()).forEach(function (track) {
+          console.log('track: ', track)
+          if (track) {
+            track.stop()
+          }
+        })
+      }
+    }
+
+    try {
+      mediaTracks.stop()
+    } catch (e) {}
 
     if (typeof camOptions.onClose === 'function' && activateCallback) {
       camOptions.onClose()
