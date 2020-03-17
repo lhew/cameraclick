@@ -1,3 +1,9 @@
+process.env.NODE_ENV &&
+  console.log(
+    `${require('../package.json').name}`,
+    ' -  v',
+    require('../package.json').version
+  )
 export default function CameraClick (element, camOptions) {
   let isPlaying = false
 
@@ -26,23 +32,25 @@ export default function CameraClick (element, camOptions) {
     isPlaying = true
     captureBtn.disabled = false
 
-    navigator.getUserMedia(
-      { video: true },
-      function (localMediaStream) {
-        videoWrapper.innerHTML = ''
-        videoWrapper.appendChild(videoCanvas)
-        videoCanvas.srcObject = localMediaStream
-        mediaTracks = localMediaStream
-        window.mediaTracks = mediaTracks
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(function (localMediaStream) {
+          videoWrapper.innerHTML = ''
+          videoWrapper.appendChild(videoCanvas)
+          videoCanvas.srcObject = localMediaStream
+          mediaTracks = localMediaStream
+          window.mediaTracks = mediaTracks
 
-        if (typeof onSuccess === 'function') {
-          onSuccess(localMediaStream)
-        }
-      },
-      function (error) {
-        if (typeof onError === 'function') onError(error)
-      }
-    )
+          if (typeof onSuccess === 'function') {
+            console.log('rolou')
+            onSuccess(localMediaStream)
+          }
+        })
+        .catch(function (error) {
+          if (typeof onError === 'function') onError(error)
+        })
+    }
   }
 
   const capture = (captureArguments = {}) => {
@@ -90,7 +98,6 @@ export default function CameraClick (element, camOptions) {
     ) {
       MediaStream.prototype.stop = function () {
         Array.from(this.getTracks()).forEach(function (track) {
-          console.log('track: ', track)
           if (track) {
             track.stop()
           }
