@@ -1,8 +1,6 @@
 process.env.NODE_ENV &&
   console.log(
-    `${require('../package.json').name}`,
-    ' -  v',
-    require('../package.json').version
+    `${require('../package.json').name} v${require('../package.json').version}`
   )
 export default function CameraClick (element, camOptions) {
   let isPlaying = false
@@ -115,10 +113,14 @@ export default function CameraClick (element, camOptions) {
   }
 
   const checkPermissions = async function () {
-    const permissions = await navigator.permissions.query({ name: 'camera' })
-    const result = await permissions
-
-    return result.state
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      const permissions = await navigator.mediaDevices.getUserMedia({
+        video: true
+      })
+      const result = await permissions
+      return result.state
+    }
+    return false
   }
 
   const isOpen = () => isPlaying
