@@ -29,25 +29,26 @@ export default function CameraClick (element, camOptions) {
 
     isPlaying = true
     captureBtn.disabled = false
+    try {
+      const localMediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true
+      })
+      if (localMediaStream) {
+        videoWrapper.innerHTML = ''
+        videoWrapper.appendChild(videoCanvas)
+        videoCanvas.srcObject = localMediaStream
+        mediaTracks = localMediaStream
+        window.mediaTracks = mediaTracks
 
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then(function (localMediaStream) {
-          videoWrapper.innerHTML = ''
-          videoWrapper.appendChild(videoCanvas)
-          videoCanvas.srcObject = localMediaStream
-          mediaTracks = localMediaStream
-          window.mediaTracks = mediaTracks
-
-          if (typeof onSuccess === 'function') {
-            console.log('rolou')
-            onSuccess(localMediaStream)
-          }
-        })
-        .catch(function (error) {
-          if (typeof onError === 'function') onError(error)
-        })
+        if (typeof onSuccess === 'function') {
+          console.log('rolou')
+          onSuccess(localMediaStream)
+        }
+      }
+    } catch (e) {
+      if (typeof onSuccess === 'function') {
+        onError(e)
+      }
     }
   }
 
@@ -76,36 +77,37 @@ export default function CameraClick (element, camOptions) {
   }
 
   const close = activateCallback => {
-    captureBtn.disabled = true
-    isPlaying = false
-    videoCanvas.srcObject = null
-
-    /* global webkitMediaStream:true */
-    var MediaStream = window.MediaStream
-
-    if (
-      typeof MediaStream === 'undefined' &&
-      typeof webkitMediaStream !== 'undefined'
-    ) {
-      MediaStream = webkitMediaStream
-    }
-
-    if (
-      typeof MediaStream !== 'undefined' &&
-      !('stop' in MediaStream.prototype)
-    ) {
-      MediaStream.prototype.stop = function () {
-        Array.from(this.getTracks()).forEach(function (track) {
-          if (track) {
-            track.stop()
-          }
-        })
-      }
-    }
-
     try {
+      captureBtn.disabled = true
+      isPlaying = false
+      videoCanvas.srcObject = null
+
+      /* global webkitMediaStream:true */
+      var MediaStream = window.MediaStream
+
+      if (
+        typeof MediaStream === 'undefined' &&
+        typeof webkitMediaStream !== 'undefined'
+      ) {
+        MediaStream = webkitMediaStream
+      }
+
+      if (
+        typeof MediaStream !== 'undefined' &&
+        !('stop' in MediaStream.prototype)
+      ) {
+        MediaStream.prototype.stop = function () {
+          Array.from(this.getTracks()).forEach(function (track) {
+            if (track) {
+              track.stop()
+            }
+          })
+        }
+      }
       mediaTracks.stop()
-    } catch (e) {}
+    } catch (e) {
+      console.log('cant stop tracks: ', e)
+    }
 
     if (typeof camOptions.onClose === 'function' && activateCallback) {
       camOptions.onClose()

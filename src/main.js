@@ -29,7 +29,6 @@ window.onload = () => {
   start.onclick = function () {
     element.classList.toggle('open')
     if (element.classList.contains('open')) {
-      console.log('buceta')
       camera.open()
     } else {
       setTimeout(() => {

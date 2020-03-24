@@ -15,7 +15,7 @@ const config = {
   input: ['src/index.js', 'src/cameraclick.js', 'src/utils.js'],
   output: {
     dir: 'dist',
-    format: 'es',
+    format: 'cjs',
     sourcemap: true
   },
   plugins: [
@@ -26,7 +26,7 @@ const config = {
     visualizer(),
     // filesize(),
     progress(),
-    // terser(),
+    terser(),
     resolve({
       browser: true,
       extensions: ['.js']
@@ -34,7 +34,10 @@ const config = {
     commonjs({
       include: 'node_modules/**'
     }),
-    babel({ runtimeHelpers: true })
+    babel({
+      plugins: ['@babel/plugin-proposal-object-rest-spread'],
+      runtimeHelpers: true
+    })
   ]
 }
 
